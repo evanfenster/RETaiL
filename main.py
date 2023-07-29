@@ -92,20 +92,8 @@ def listen():
   
             engine.runAndWait()
 
-
-
-
-# ------------------------
-# MAIN FUNCTIONS
-# ------------------------
-def main():
-    global chat
-
-    load_dotenv()
-
-    chat = setup_chat()
-
-    st.title("Chat with Stocky!")
+def chat_ui():
+    st.title("Chat with Stocky!🛒")
 
     if "messages" not in st.session_state:
         st.session_state["messages"] = [{"role": "assistant", "content": "Hey, I'm Stocky! I'm here to help you with your shopping needs. How can I help you today?"}]
@@ -133,6 +121,20 @@ def main():
         
         # Force a rerun to reflect updated response
         st.experimental_rerun()
+
+
+# ------------------------
+# MAIN FUNCTIONS
+# ------------------------
+def main():
+    global chat
+
+    load_dotenv()
+
+    chat = setup_chat()
+
+    listen()
+    chat_ui()
 
 
 if __name__ == "__main__":
