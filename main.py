@@ -31,7 +31,7 @@ def setup_chat() -> Optional[ChatOpenAI]:
 
     tools = [
         Tool(
-            name = "Query an Attribute of an Item",
+            name = "Query an Attribute of a Grocery Store Item",
             func=worker.query,
             description="used to ask about a specific attribute of an item; input examples: 'price of apples', 'description of eggs', 'quantity of milk', 'precense of bread'",
         ),
@@ -134,7 +134,7 @@ def main():
     chat = setup_chat()
 
     listen()
-    chat_ui()
+    #chat_ui()
 
 
 if __name__ == "__main__":
