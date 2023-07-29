@@ -1,0 +1,47 @@
+body {
+    background-color: #2b2b2b;  /* Dark shade for the background */
+    color: #FFFFFF;  /* White color for the general text */
+    padding: 20px;
+    border-radius: 10px;
+}
+
+h1 {
+    color: #6B8E23;  /* Green text for the title */
+}
+
+p {
+    color: #FFFFFF;  /* White text for the paragraphs */
+}
+
+div[data-baseweb="toast"] div {
+    background: #6B8E23;  /* Green color for the toast background */
+    border: 1px solid #FFFFFF;  /* White border color */
+    color: #FFFFFF;  /* White text for the toast */
+    border-radius: 5px;
+}
+
+button[data-baseweb="button"] {
+    background-color: #6B8E23 !important;  /* Green color for the button */
+    color: #FFFFFF !important;  /* White text for the button */
+    border-radius: 10px !important;
+}
+
+button[data-baseweb="button"]:hover {
+    background-color: #98FB98 !important;  /* Lighter green shade when hovering over the button */
+    color: #2b2b2b !important;  /* Dark text when hovering over the button */
+}
+
+table {
+    font-size: 0.75rem;
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    color: #FFFFFF;  /* White text for the table */
+    background-color: #2b2b2b;  /* Dark background for the table */
+}
+
+th, td {
+    padding: 8px;
+    text-align: left;
+    border: 1px solid #FFFFFF;  /* White border for the table cells */
+}

@@ -11,7 +11,7 @@ import os
 from dotenv import load_dotenv
 import sqlite3
 
-global chain, cursor, item_picker
+global chain, cursor, item_picker, connection
 
 # ------------------------
 # DATABASE FUNCTIONS
@@ -130,6 +130,7 @@ def get_instore(item: str) -> str:
         return "True" # need to return english for the llm to understand
     else:
         return "False"
+    
 
 # ------------------------
 # MAIN FUNCTIONS
@@ -171,7 +172,7 @@ def query(question: str) -> str:
         return "NA"
 
 def main():
-    global cursor, chain, item_picker
+    global cursor, chain, item_picker, connection
     load_dotenv()
 
     # Connect to the SQLite database
@@ -181,6 +182,7 @@ def main():
     # Get our LLM chains
     chain = setup_worker()
     item_picker = ChatOpenAI(model_name="gpt-3.5-turbo-0613", temperature=0)
+
 
 if __name__ == "__main__":
     main()
