@@ -31,15 +31,15 @@ def setup_chat() -> Optional[ChatOpenAI]:
 
     tools = [
         Tool(
-            name = "Query",
+            name = "Query an Attribute of an Item",
             func=worker.query,
-            description="necessary to find info about an item; returns 'NA' if the item is not in the store",
+            description="used to ask about a specific attribute of an item; input examples: 'price of apples', 'description of eggs', 'quantity of milk', 'precense of bread'",
         ),
     ]
 
     memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
     llm = ChatOpenAI(model_name="gpt-3.5-turbo-0613", temperature=0)
-    agent_keyword_args = {"system_message": "Your name is Stocky, and you are an incredibly friendly customer service chatbot for a retail store. If a customer asks about an item, you should Query for more info on it first."}
+    agent_keyword_args = {"system_message": "Your name is Stocky, and you are an incredibly friendly customer service chatbot for a retail store. After answering, always ask if there is anything else you can help with!"}
     chat = initialize_agent(tools, llm, agent=AgentType.CHAT_CONVERSATIONAL_REACT_DESCRIPTION, agent_kwargs=agent_keyword_args, verbose=True, memory=memory)
 
     return chat
@@ -67,7 +67,7 @@ def listen():
                 # other speech recognition models are also available.
                 text = r.recognize_whisper(
                     audio,
-                    model="base.en",
+                    model="medium.en",
                     show_dict=True,
                 )["text"]
 
