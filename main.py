@@ -16,6 +16,7 @@ from langchain.prompts import (
 )
 import speech_recognition as sr
 import pyttsx3
+import json
 
 engine = pyttsx3.init()
 
@@ -38,7 +39,7 @@ def setup_chat() -> Optional[ChatOpenAI]:
     ]
 
     memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
-    llm = ChatOpenAI(model_name="gpt-3.5-turbo-0613", temperature=0)
+    llm = ChatOpenAI(model_name="gpt-3.5-turbo-0613", temperature=0.2)
     agent_keyword_args = {"system_message": "Your name is Stocky, and you are an incredibly friendly customer service chatbot for a retail store. After answering, always ask if there is anything else you can help with!"}
     chat = initialize_agent(tools, llm, agent=AgentType.CHAT_CONVERSATIONAL_REACT_DESCRIPTION, agent_kwargs=agent_keyword_args, verbose=True, memory=memory)
 
@@ -47,43 +48,55 @@ def setup_chat() -> Optional[ChatOpenAI]:
 # ------------------------
 # SPEECH FUNCTIONS
 # ------------------------
+def is_json(myjson):
+  try:
+    json_object = json.loads(myjson)
+  except ValueError as e:
+    return False
+  return True
+
 def listen():
     r = sr.Recognizer()
     with sr.Microphone() as source:
         print("Calibrating...")
         r.adjust_for_ambient_noise(source, duration=5)
         # optional parameters to adjust microphone sensitivity
-        # r.energy_threshold = 200
-        # r.pause_threshold=0.5
+        r.energy_threshold = 4000
+        r.pause_threshold=0.5
 
         print("Okay, go!")
         while 1:
             text = ""
             print("listening now...")
+            audio = r.listen(source, timeout=5, phrase_time_limit=30)
+            print("Recognizing...")
+            # whisper model options are found here: https://github.com/openai/whisper#available-models-and-languages
+            # other speech recognition models are also available.
+            
+            text = r.recognize_whisper(
+                audio,
+                model="base.en",
+                show_dict=True,
+            )["text"]
+
+            print("You said: ")
+            print(text)
+
+            
+            print("Getting response...")
+            # Hacky solution for known langchain issue 
             try:
-                audio = r.listen(source, timeout=5, phrase_time_limit=30)
-                print("Recognizing...")
-                # whisper model options are found here: https://github.com/openai/whisper#available-models-and-languages
-                # other speech recognition models are also available.
-                text = r.recognize_whisper(
-                    audio,
-                    model="medium.en",
-                    show_dict=True,
-                )["text"]
-
-                print("You said: ")
-                print(text)
-
-                response_text = chat.run(input=text)
-                print(response_text)
-                engine.say(response_text)
-            except Exception as e:
-                unrecognized_speech_text = (
-                    f"Sorry, I didn't catch that. Please repeat your question."
-                )
-                print(e)
-                response_text = unrecognized_speech_text
-                engine.say(response_text)
+                response = chat.run(input=text)
+            except ValueError as e:
+                response = str(e)
+                if not response.startswith("Could not parse LLM output:"):
+                    unrecognized_speech_text = (f"Sorry, I didn't catch that. Please repeat your question.")
+                    print(e)
+                    response = unrecognized_speech_text
+                else:
+                    response = response.removeprefix("Could not parse LLM output: ")
+            print(response)
+            engine.say(response)
   
             engine.runAndWait()
 
