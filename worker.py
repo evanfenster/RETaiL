@@ -164,7 +164,7 @@ def main():
     
     # Get our LLM chains
     chain = setup_worker()
-    item_picker = ChatOpenAI(model="gpt-4", temperature=0)
+    item_picker = ChatOpenAI(model_name="gpt-3.5-turbo-0613", temperature=0)
 
 if __name__ == "__main__":
     main()

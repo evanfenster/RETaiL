@@ -8,6 +8,12 @@ from typing import Optional
 from pydantic import BaseModel, Field
 from langchain.chat_models import ChatOpenAI
 import worker as inventory_worker
+from langchain.prompts import (
+    ChatPromptTemplate,
+    MessagesPlaceholder,
+    SystemMessagePromptTemplate,
+    HumanMessagePromptTemplate,
+)
 
 global chat
 
@@ -28,8 +34,9 @@ def setup_chat() -> Optional[ChatOpenAI]:
     ]
 
     memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
-    llm = ChatOpenAI(temperature=0)
-    chat = initialize_agent(tools, llm, agent=AgentType.CHAT_CONVERSATIONAL_REACT_DESCRIPTION, verbose=True, memory=memory)
+    llm = ChatOpenAI(model_name="gpt-3.5-turbo-0613", temperature=0)
+    agent_keyword_args = {"system_message": "You are an incredibly friendly chatbot. Always add a ':)' to the end of your messages."}
+    chat = initialize_agent(tools, llm, agent=AgentType.CHAT_CONVERSATIONAL_REACT_DESCRIPTION, agent_kwargs=agent_keyword_args, verbose=True, memory=memory)
 
     return chat
 
@@ -44,7 +51,7 @@ def main():
 
     chat = setup_chat()
     question = "Do you have cake?"
-    answer = chat.run(question)
+    answer = chat.run(input=question)
     print(answer)
 
 if __name__ == "__main__":
