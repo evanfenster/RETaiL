@@ -48,13 +48,6 @@ def setup_chat() -> Optional[ChatOpenAI]:
 # ------------------------
 # SPEECH FUNCTIONS
 # ------------------------
-def is_json(myjson):
-  try:
-    json_object = json.loads(myjson)
-  except ValueError as e:
-    return False
-  return True
-
 def listen():
     r = sr.Recognizer()
     with sr.Microphone() as source:
