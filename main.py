@@ -5,7 +5,6 @@ from langchain.agents import initialize_agent
 from langchain.agents import Tool
 from langchain.agents import AgentType
 from typing import Optional
-from pydantic import BaseModel, Field
 from langchain.chat_models import ChatOpenAI
 import worker as inventory_worker
 from langchain.prompts import (
@@ -16,14 +15,14 @@ from langchain.prompts import (
 )
 import speech_recognition as sr
 import pyttsx3
-import json
+import streamlit as st
 
 engine = pyttsx3.init()
 
 global chat
 
 # ------------------------
-# CHAT FUNCTIONS
+# SETUP FUNCTIONS
 # ------------------------
 def setup_chat() -> Optional[ChatOpenAI]:
     """Setup the chatbot. This function is called when the chatbot is first initialized."""
@@ -93,6 +92,9 @@ def listen():
   
             engine.runAndWait()
 
+
+
+
 # ------------------------
 # MAIN FUNCTIONS
 # ------------------------
@@ -103,10 +105,35 @@ def main():
 
     chat = setup_chat()
 
-    listen()
-    # question = "How are your cakes?"
-    # answer = chat.run(input=question)
-    # print(answer)
+    st.title("Chat with Stocky!")
+
+    if "messages" not in st.session_state:
+        st.session_state["messages"] = [{"role": "assistant", "content": "Hey, I'm Stocky! I'm here to help you with your shopping needs. How can I help you today?"}]
+
+    for msg in st.session_state.messages:  # Exclude the last message which is potentially still loading
+        if msg["role"] == "assistant":
+            st.chat_message("🤖").write(msg["content"])
+        else:
+            st.chat_message("👤").write(msg["content"])
+
+    prompt = st.chat_input()
+
+    if prompt:
+        st.session_state.messages.append({"role": "user", "content": prompt})
+        st.chat_message("👤").write(prompt)
+
+        # Mark that assistant's response is pending
+        st.session_state.messages.append({"role": "assistant", "content": "Loading...", "is_pending": True})
+
+        # Get assistant's response
+        response = chat.run(input=prompt)
+
+        # Update assistant's response
+        st.session_state.messages[-1] = {"role": "assistant", "content": response}
+        
+        # Force a rerun to reflect updated response
+        st.experimental_rerun()
+
 
 if __name__ == "__main__":
     main()

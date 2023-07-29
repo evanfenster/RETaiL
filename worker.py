@@ -101,6 +101,22 @@ def get_description(item: str) -> int:
         return description[0]
     else:
         return None
+
+def get_aisle(item: str) -> int:
+    """Get the aisle of an item from its ID. The first letter should be capitalized, and the item should not be pluralized.
+
+    Args:
+        item: The item to get the aisle of.
+    """
+
+    id = get_id(item)
+
+    cursor.execute("SELECT Aisle FROM Inventory WHERE ProductID = ?", (id,))
+    aisle = cursor.fetchone()
+    if aisle:
+        return aisle[0]
+    else:
+        return None
     
 def get_instore(item: str) -> str:
     """Get whether an item is in the store or not from its ID. The first letter should be capitalized, and the item should not be pluralized.
@@ -134,7 +150,7 @@ def setup_worker() -> Optional[ChatOpenAI]:
     ]
     prompt = ChatPromptTemplate(messages=prompt_msgs)
 
-    chain = create_openai_fn_chain([get_instore, get_quantity, get_price, get_description], llm, prompt, verbose=True)
+    chain = create_openai_fn_chain([get_instore, get_quantity, get_price, get_aisle, get_description], llm, prompt, verbose=True)
     return chain
 
 def query(question: str) -> str:
