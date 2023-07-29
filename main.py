@@ -24,32 +24,43 @@ def get_id(item: str) -> int:
     """
 
     cursor.execute("SELECT ProductID FROM Inventory WHERE ProductName = ?", (item,))
-    ProductID = cursor.fetchone()[0]
-    return ProductID
+    id = cursor.fetchone()
+    if id:
+        return id[0]
+    else:
+        return None
 
 def get_quantity(item: str) -> int:
-    id = get_id(item)
     """Get the quantity of an item in stock from its ID. The first letter should be capitalized, and the item should not be pluralized.
 
     Args:
         item: The item to get the quantity of.
     """
 
+    id = get_id(item)
+
     cursor.execute("SELECT QuantityInStock FROM Inventory WHERE ProductID = ?", (id,))
-    quantity = cursor.fetchone()[0]
-    return quantity
+    quantity = cursor.fetchone()
+    if quantity:
+        return quantity[0]
+    else:
+        return None
 
 def get_price(item: str) -> int:
-    id = get_id(item)
     """Get the price of an item from its ID. The first letter should be capitalized, and the item should not be pluralized.
 
     Args:
         item: The item to get the price of.
     """
 
+    id = get_id(item)
+
     cursor.execute("SELECT Price FROM Inventory WHERE ProductID = ?", (id,))
-    price = cursor.fetchone()[0]
-    return price
+    price = cursor.fetchone()
+    if price:
+        return price[0]
+    else:
+        return None
 
 # ------------------------
 # CHAT FUNCTIONS
