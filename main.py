@@ -37,7 +37,7 @@ def setup_chat() -> Optional[ChatOpenAI]:
 
     tools = [
         Tool(
-            name = "Query an Attribute of a Grocery Store Item",
+            name = "Query Grocery Store Info",
             func=worker.query,
             description="used to ask about a specific attribute of an item; input examples: 'price of apples', 'description of eggs', 'quantity of milk', 'asile of bread'",
         ),
@@ -140,7 +140,7 @@ def chat_ui():
         """
         ## Stocky 🛒
         Stocky is your shopping assistant. Start a conversation in the chat box and Stocky will respond to your shopping needs! \n
-        Stocky can dynamically query the store's database and answer questions about the store's inventory.
+        Stocky can dynamically query the store's database and answer questions about the store's inventory, even as items are being bought throughout the day.
         Feel free to ask about:
         - price
         - quantity
@@ -255,8 +255,8 @@ def main():
 
     chat = setup_chat()
 
-    listen()
-    #chat_ui()
+    #listen()
+    chat_ui()
 
 if __name__ == "__main__":
     main()
